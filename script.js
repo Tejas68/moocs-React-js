@@ -1,20 +1,61 @@
-document.getElementById("contactForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the default form submission
+let currentInput = '';
+let operator = '';
+let previousInput = '';
 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    const message = document.getElementById("message").value;
-    const formResponse = document.getElementById("formResponse");
+function inputNumber(num) {
+    currentInput += num;
+    updateDisplay(currentInput);
+}
 
-    // Basic validation
-    if (name && email && message) {
-        formResponse.textContent = "Massage send Successfully, " + name + "!";
-        formResponse.style.color = "black";
+function inputOperator(op) {
+    if (currentInput === '') return;
+    operator = op;
+    previousInput = currentInput;
+    currentInput = '';
+}
 
-        // Clear form fields
-        document.getElementById("contactForm").reset();
-    } else {
-        formResponse.textContent = "Please fill in all fields.";
-        formResponse.style.color = "red";
+function updateDisplay(value) {
+    document.getElementById('display').value = value;
+}
+
+function clearDisplay() {
+    currentInput = '';
+    operator = '';
+    previousInput = '';
+    updateDisplay('');
+}
+
+function calculate() {
+    if (previousInput === '' || currentInput === '' || operator === '') return;
+
+    let result;
+    const prev = parseFloat(previousInput);
+    const current = parseFloat(currentInput);
+
+    switch (operator) {
+        case '+':
+            result = prev + current;
+            break;
+        case '-':
+            result = prev - current;
+            break;
+        case '*':
+            result = prev * current;
+            break;
+        case '/':
+            if (current === 0) {
+                alert("Error: Division by zero is not allowed.");
+                clearDisplay();
+                return;
+            }
+            result = prev / current;
+            break;
+        default:
+            return;
     }
-});
+
+    updateDisplay(result);
+    currentInput = result.toString();
+    operator = '';
+    previousInput = '';
+}
